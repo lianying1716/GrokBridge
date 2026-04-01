@@ -1,0 +1,47 @@
+services:
+  browser:
+    image: linuxserver/chromium:latest
+    container_name: grok-browser
+    restart: unless-stopped
+    shm_size: "1gb"
+    environment:
+      TZ: Etc/UTC
+      TITLE: "Grok Browser"
+      RESTART_APP: "true"
+      CHROME_CLI: "/config/chrome-profile --remote-debugging-address=0.0.0.0 --remote-debugging-port=9222 --no-default-browser-check https://grok.com/"
+    ports:
+      - "${BROWSER_WEB_PORT:-13000}:3000"
+    expose:
+      - "9222"
+    volumes:
+      - ./browser-data:/config
+
+  cdp-proxy:
+    image: alpine:3.20
+    container_name: grok-browser-cdp
+    restart: unless-stopped
+    depends_on:
+      - browser
+    network_mode: "service:browser"
+    command: >
+      /bin/sh -lc "apk add --no-cache socat >/dev/null &&
+      socat TCP-LISTEN:9223,bind=0.0.0.0,fork,reuseaddr TCP:127.0.0.1:9222"
+
+  app:
+    build: .
+    image: grokproxy:latest
+    container_name: grokproxy
+    restart: unless-stopped
+    depends_on:
+      - browser
+      - cdp-proxy
+    environment:
+      GROK_UPSTREAM_MODE: browser
+      GROK_BROWSER_CDP_URL: "http://browser:9223"
+      GROK_HOME_URL: "https://grok.com/"
+      GROK_CHAT_PATH: "/rest/app-chat/conversations/new"
+      BROWSER_WEB_PORT: "${BROWSER_WEB_PORT:-13000}"
+    ports:
+      - "${GROKPROXY_PORT:-18080}:8000"
+    volumes:
+      - ./cookies.local.yaml:/app/cookies.yaml

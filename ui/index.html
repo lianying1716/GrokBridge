@@ -1,0 +1,1300 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GrokBridge 配置页</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --panel: #fffdf8;
+      --panel-2: #fff9f0;
+      --ink: #1b1b18;
+      --muted: #6c675d;
+      --line: #ddd4c7;
+      --accent: #166534;
+      --accent-2: #c2410c;
+      --shadow: 0 18px 40px rgba(40, 30, 10, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(22, 101, 52, 0.08), transparent 26%),
+        radial-gradient(circle at top right, rgba(194, 65, 12, 0.08), transparent 20%),
+        linear-gradient(180deg, #f7f3eb 0%, var(--bg) 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+
+    .hero {
+      margin-bottom: 24px;
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 248, 235, 0.94));
+      box-shadow: var(--shadow);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      line-height: 1.1;
+    }
+
+    .sub {
+      color: var(--muted);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.8fr);
+    }
+
+    .step-strip {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .step-pill {
+      border: 1px solid rgba(22, 101, 52, 0.12);
+      border-radius: 16px;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.72);
+      line-height: 1.6;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .step-pill strong {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .card h3 {
+      margin: 22px 0 8px;
+      font-size: 16px;
+    }
+
+    .hint {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .status {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #f5f3ee;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 132px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      background: var(--ink);
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-1px);
+      opacity: .94;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .soft {
+      background: #ece5d8;
+      color: var(--ink);
+    }
+
+    .accent {
+      background: var(--accent);
+    }
+
+    .warn {
+      background: var(--accent-2);
+    }
+
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .mini {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+      margin: 22px 0;
+    }
+
+    .session-summary {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .session-empty {
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fffcf6;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .session-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      background: var(--panel-2);
+      transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+    }
+
+    .session-item.active {
+      border-color: rgba(22, 101, 52, 0.65);
+      box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .session-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .session-order {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .session-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .session-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+      margin-top: 6px;
+      word-break: break-word;
+    }
+
+    .session-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .session-actions button {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .editor-note {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 13px;
+    }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 86px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(22, 101, 52, 0.1);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      margin-bottom: 12px;
+    }
+
+    .import-card {
+      margin-bottom: 20px;
+      background:
+        radial-gradient(circle at top right, rgba(22, 101, 52, 0.08), transparent 28%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 251, 243, 0.95));
+    }
+
+    .import-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      align-items: start;
+    }
+
+    .import-panel {
+      border: 1px solid rgba(22, 101, 52, 0.12);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.68);
+    }
+
+    .import-panel h3 {
+      margin-top: 0;
+    }
+
+    .import-cta {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: #f4fbf5;
+      border: 1px solid rgba(22, 101, 52, 0.14);
+      color: #235131;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .import-cta strong {
+      display: block;
+      color: #143821;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 980px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .import-grid,
+      .step-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .pair {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .session-head {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>GrokBridge 配置页</h1>
+      <p class="sub">这个页面现在支持真正的多账号模式。你可以把多个 Grok 账号会话导入为一个列表，运行时会按列表顺序轮询使用。页面不会直接读取你本机浏览器 Cookie，需要你从浏览器复制 `Request Headers`、`Copy as cURL` 或整段 Cookie 后再导入。</p>
+      <div class="step-strip">
+        <div class="step-pill">
+          <strong>第 1 步：导入账号</strong>
+          在你自己的浏览器登录 `grok.com`，复制一个请求的 `Request Headers` 或 `Copy as cURL`，然后粘贴到下方导入区。
+        </div>
+        <div class="step-pill">
+          <strong>第 2 步：整理账号列表</strong>
+          每导入一个账号，就把它加入账号列表。多个账号可以编辑、删除、调整顺序。
+        </div>
+        <div class="step-pill">
+          <strong>第 3 步：保存并调用</strong>
+          填写调用 API Key，保存全部配置后，用右侧动态显示的 `/v1` 地址开始调用。
+        </div>
+      </div>
+    </section>
+
+    <section class="card import-card">
+      <div class="section-tag">STEP 1</div>
+      <h2 id="editorTitle">导入账号</h2>
+      <p class="editor-note">第一次进入页面时，你只需要做这一件事：把浏览器里的 `Request Headers`、`Copy as cURL` 或整段 Cookie 粘贴到下面。解析成功后，再点“导入并加入列表”。</p>
+      <div class="import-cta">
+        <strong>第一次使用从这里开始</strong>
+        如果你不知道该做什么，就先把 `grok.com` 某个请求的 `Request Headers` 或 `Copy as cURL` 粘贴到左侧输入框，再点击“解析粘贴内容”。
+      </div>
+        <div id="stateBox" class="status">正在读取状态…</div>
+      <div class="import-grid">
+        <div class="import-panel">
+          <h3>导入原始内容</h3>
+          <label for="rawImportInput">粘贴请求头 / cURL / Cookie 原文</label>
+          <textarea id="rawImportInput" placeholder="支持粘贴 Request Headers、Copy as cURL，或整段 Cookie 字符串"></textarea>
+
+          <div class="actions">
+            <button id="parseImportBtn" class="accent" type="button">解析粘贴内容</button>
+            <button id="pasteImportBtn" class="soft" type="button">从剪贴板读取</button>
+            <button id="fillLocalUaBtn" class="soft" type="button">使用当前浏览器 UA</button>
+          </div>
+          <div class="mini">如果你复制的是完整请求头，页面会尽量自动填入 Cookie、`User-Agent` 和 `Accept-Language`。如果只复制了 Cookie，也可以正常导入。</div>
+        </div>
+
+        <div class="import-panel">
+          <h3>确认并加入账号列表</h3>
+          <label for="sessionNameInput">账号备注</label>
+          <input id="sessionNameInput" placeholder="可选，例如 主账号 / 备用账号 2">
+
+          <label for="cookieInput">Cookie</label>
+          <textarea id="cookieInput" placeholder="解析成功后会自动填入，也可以手动粘贴整段 Cookie"></textarea>
+
+          <label for="uaInput">User-Agent</label>
+          <textarea id="uaInput" rows="3" placeholder="未识别时可手动填写，默认可使用当前浏览器 UA"></textarea>
+
+          <label for="langInput">Accept-Language</label>
+          <input id="langInput" placeholder="例如 zh-CN,zh;q=0.9,en;q=0.8">
+
+          <div class="actions">
+            <button id="saveAccountBtn" class="accent" type="button">导入并加入列表</button>
+            <button id="deleteAccountBtn" class="warn" type="button">删除当前账号</button>
+            <button id="resetEditorBtn" class="soft" type="button">重新导入</button>
+          </div>
+          <div class="mini">“导入并加入列表 / 更新当前账号”只是更新页面里的账号集合。真正写入 `cookies.local.yaml` 还要点下面的“保存全部配置”。</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="section-tag">STEP 2</div>
+        <h2>账号列表</h2>
+        <p class="hint">每个账号都以卡片形式显示账号摘要、订阅能力、会话数量和 Cookie 缩略。你可以在这里查看、编辑、删除和调整顺序。</p>
+        <div id="sessionSummary" class="session-summary">当前还没有账号。请先完成上方第 1 步导入账号。</div>
+        <div id="sessionList" class="session-list"></div>
+
+        <div class="actions">
+          <button id="newAccountBtn" class="accent" type="button">导入另一个账号</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-tag">STEP 3</div>
+        <h2>调用 API Key</h2>
+        <p class="hint">这是调用当前 GrokBridge `/v1` OpenAI 兼容接口时使用的 Bearer 密钥，不是 Grok 官网账号密码。它是全局的，所有账号共用同一个调用 API Key。</p>
+
+        <label for="apiBaseUrlInput">API 调用地址</label>
+        <input id="apiBaseUrlInput" type="text" readonly>
+        <div class="actions">
+          <button id="copyApiUrlBtn" class="soft" type="button">复制地址</button>
+        </div>
+        <div id="apiUseHint" class="mini">客户端调用时，把请求发到当前页面对应的 `/v1` 地址。</div>
+
+        <label for="apiKeyInput">调用 API Key</label>
+        <div class="pair">
+          <input id="apiKeyInput" type="password" placeholder="gpk_xxx">
+          <button id="toggleKeyBtn" class="soft" type="button">显示</button>
+          <button id="generateKeyBtn" class="warn" type="button">自动生成</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="mini">保存时会把当前账号列表写入 `sessions` 数组。运行时请求会按列表顺序轮询：账号 1 -> 账号 2 -> 账号 3。</div>
+
+        <div class="actions">
+          <button id="saveConfigBtn" class="accent" type="button">保存全部配置</button>
+        </div>
+        <div class="mini">客户端调用上面的 API 地址时，把这个值放到 `Authorization: Bearer &lt;key&gt;` 里。若服务直接暴露公网，请在反向代理层再加一层访问控制。</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const stateBox = document.getElementById('stateBox');
+    const sessionSummary = document.getElementById('sessionSummary');
+    const sessionList = document.getElementById('sessionList');
+    const editorTitle = document.getElementById('editorTitle');
+    const newAccountBtn = document.getElementById('newAccountBtn');
+    const sessionNameInput = document.getElementById('sessionNameInput');
+    const rawImportInput = document.getElementById('rawImportInput');
+    const parseImportBtn = document.getElementById('parseImportBtn');
+    const pasteImportBtn = document.getElementById('pasteImportBtn');
+    const fillLocalUaBtn = document.getElementById('fillLocalUaBtn');
+    const cookieInput = document.getElementById('cookieInput');
+    const uaInput = document.getElementById('uaInput');
+    const langInput = document.getElementById('langInput');
+    const saveAccountBtn = document.getElementById('saveAccountBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const resetEditorBtn = document.getElementById('resetEditorBtn');
+    const apiBaseUrlInput = document.getElementById('apiBaseUrlInput');
+    const copyApiUrlBtn = document.getElementById('copyApiUrlBtn');
+    const apiUseHint = document.getElementById('apiUseHint');
+    const apiKeyInput = document.getElementById('apiKeyInput');
+    const toggleKeyBtn = document.getElementById('toggleKeyBtn');
+    const generateKeyBtn = document.getElementById('generateKeyBtn');
+    const saveConfigBtn = document.getElementById('saveConfigBtn');
+
+    let sessions = [];
+    let editingIndex = null;
+
+    function setStatus(text) {
+      stateBox.textContent = text;
+    }
+
+    function generateApiKey() {
+      const bytes = new Uint8Array(24);
+      crypto.getRandomValues(bytes);
+      return 'gpk_' + Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function maskSecret(value, prefix = 14, suffix = 8) {
+      const raw = String(value || '').trim();
+      if (!raw) {
+        return '';
+      }
+      if (raw.length <= prefix + suffix) {
+        return '*'.repeat(raw.length);
+      }
+      return `${raw.slice(0, prefix)}********${raw.slice(-suffix)}`;
+    }
+
+    function normalizeCookieString(raw) {
+      let text = String(raw || '').trim();
+      if (!text) {
+        return '';
+      }
+
+      text = text.replace(/^cookie\s*:\s*/i, '').trim();
+      text = text.replace(/^['"]|['"]$/g, '');
+      text = text.replace(/\\'/g, "'");
+      text = text.replace(/\\"/g, '"');
+
+      const segments = text
+        .split(';')
+        .map(segment => segment.trim())
+        .filter(Boolean);
+
+      const result = [];
+      const seen = new Set();
+
+      for (const segment of segments) {
+        const index = segment.indexOf('=');
+        if (index <= 0) {
+          continue;
+        }
+
+        const name = segment.slice(0, index).trim();
+        const value = segment.slice(index + 1).trim();
+        if (!name || !value) {
+          continue;
+        }
+
+        const key = name.toLowerCase();
+        if (seen.has(key)) {
+          continue;
+        }
+
+        seen.add(key);
+        result.push(`${name}=${value}`);
+      }
+
+      return result.join('; ');
+    }
+
+    function parseCurlHeaders(text) {
+      const headers = {};
+      const normalized = String(text || '').replace(/\\\r?\n/g, ' ');
+      const pattern = /(?:^|\s)-H\s+(['"])([\s\S]*?)\1/g;
+      let match;
+
+      while ((match = pattern.exec(normalized))) {
+        const headerText = String(match[2] || '')
+          .replace(/\\'/g, "'")
+          .replace(/\\"/g, '"');
+        const index = headerText.indexOf(':');
+        if (index <= 0) {
+          continue;
+        }
+
+        const name = headerText.slice(0, index).trim().toLowerCase();
+        const value = headerText.slice(index + 1).trim();
+        if (name && value && !(name in headers)) {
+          headers[name] = value;
+        }
+      }
+
+      return headers;
+    }
+
+    function parseRawHeaders(text) {
+      const headers = {};
+      for (const line of String(text || '').split(/\r?\n/)) {
+        const index = line.indexOf(':');
+        if (index <= 0) {
+          continue;
+        }
+
+        const name = line.slice(0, index).trim().toLowerCase();
+        const value = line.slice(index + 1).trim();
+        if (name && value && !(name in headers)) {
+          headers[name] = value;
+        }
+      }
+      return headers;
+    }
+
+    function parseNetscapeCookieExport(text) {
+      const cookies = [];
+      for (const line of String(text || '').split(/\r?\n/)) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith('#')) {
+          continue;
+        }
+
+        const parts = trimmed.split('\t');
+        if (parts.length < 7) {
+          continue;
+        }
+
+        const name = String(parts[5] || '').trim();
+        const value = String(parts[6] || '').trim();
+        if (name && value) {
+          cookies.push(`${name}=${value}`);
+        }
+      }
+
+      return normalizeCookieString(cookies.join('; '));
+    }
+
+    function parseImportedContent(rawText) {
+      const text = String(rawText || '').trim();
+      if (!text) {
+        throw new Error('请先粘贴内容。');
+      }
+
+      const curlHeaders = parseCurlHeaders(text);
+      const rawHeaders = parseRawHeaders(text);
+      let cookie = normalizeCookieString(curlHeaders.cookie || rawHeaders.cookie || '');
+      let userAgent = String(curlHeaders['user-agent'] || rawHeaders['user-agent'] || '').trim();
+      let acceptLanguage = String(curlHeaders['accept-language'] || rawHeaders['accept-language'] || '').trim();
+
+      if (!cookie && /\tsso\t|\tsso-rw\t|\tcf_clearance\t/i.test(text)) {
+        cookie = parseNetscapeCookieExport(text);
+      }
+
+      if (!cookie && (/^sso=/.test(text) || /^cf_clearance=/.test(text) || /^__cf_bm=/.test(text) || text.includes(';'))) {
+        cookie = normalizeCookieString(text);
+      }
+
+      if (!cookie) {
+        const matchedLine = text
+          .split(/\r?\n/)
+          .map(line => line.trim())
+          .find(line => /\b(sso|sso-rw|cf_clearance|__cf_bm)=/i.test(line));
+        if (matchedLine) {
+          cookie = normalizeCookieString(matchedLine);
+        }
+      }
+
+      if (!cookie) {
+        throw new Error('没有识别到 Cookie。请粘贴 Request Headers、Copy as cURL 或完整 Cookie 字符串。');
+      }
+
+      return { cookie, userAgent, acceptLanguage };
+    }
+
+    function fillCurrentBrowserMeta() {
+      uaInput.value = navigator.userAgent || uaInput.value;
+      langInput.value = navigator.language || langInput.value;
+    }
+
+    async function readJson(url, options) {
+      const response = await fetch(url, options);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.detail || data.message || `请求失败: ${response.status}`);
+      }
+      return data;
+    }
+
+    function normalizeUiSession(entry, index) {
+      const name = String(entry.name || '').trim();
+      const cookie = normalizeCookieString(entry.cookie || '');
+      const userAgent = String(entry.userAgent || entry.user_agent || '').trim();
+      const acceptLanguage = String(entry.acceptLanguage || entry.accept_language || '').trim();
+      const rawSummary = entry.summary && typeof entry.summary === 'object' ? entry.summary : {};
+      const summary = {
+        status: String(rawSummary.status || '').trim(),
+        statusLabel: String(rawSummary.statusLabel || '').trim() || '未知',
+        email: String(rawSummary.email || '').trim(),
+        profileName: String(rawSummary.profileName || '').trim(),
+        countryCode: String(rawSummary.countryCode || '').trim(),
+        subscriptionLabel: String(rawSummary.subscriptionLabel || '').trim() || '未知',
+        subscriptionHint: String(rawSummary.subscriptionHint || '').trim() || '未知',
+        availableModes: Array.isArray(rawSummary.availableModes) ? rawSummary.availableModes.map(item => String(item || '').trim()).filter(Boolean) : [],
+        upgradeModes: Array.isArray(rawSummary.upgradeModes) ? rawSummary.upgradeModes.map(item => String(item || '').trim()).filter(Boolean) : [],
+        conversationCount: Number(rawSummary.conversationCount || 0),
+        latestConversationTitle: String(rawSummary.latestConversationTitle || '').trim(),
+        latestConversationTime: String(rawSummary.latestConversationTime || '').trim(),
+        userId: String(rawSummary.userId || '').trim(),
+        sessionTierId: String(rawSummary.sessionTierId || '').trim(),
+      };
+      const displayName = String(entry.displayName || '').trim() || name || summary.email || summary.profileName || `账号 ${index + 1}`;
+
+      return {
+        name,
+        displayName,
+        cookie,
+        cookiePreview: String(entry.cookiePreview || '').trim() || maskSecret(cookie),
+        userAgent,
+        acceptLanguage,
+        summary,
+      };
+    }
+
+    function displaySessionName(entry, index) {
+      return String(entry.name || entry.displayName || `账号 ${index + 1}`).trim();
+    }
+
+    function getCookieNames(cookie) {
+      return String(cookie || '')
+        .split(';')
+        .map(part => part.trim().split('=')[0])
+        .filter(Boolean);
+    }
+
+    function formatTimeText(value) {
+      const raw = String(value || '').trim();
+      if (!raw) {
+        return '未知';
+      }
+
+      const date = new Date(raw);
+      if (Number.isNaN(date.getTime())) {
+        return raw;
+      }
+
+      return date.toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+
+    function buildModeText(summary) {
+      const available = Array.isArray(summary.availableModes) ? summary.availableModes : [];
+      const upgrade = Array.isArray(summary.upgradeModes) ? summary.upgradeModes : [];
+      if (!available.length && !upgrade.length) {
+        return '未知';
+      }
+
+      const parts = [];
+      if (available.length) {
+        parts.push(`可用: ${available.join(' / ')}`);
+      }
+      if (upgrade.length) {
+        parts.push(`需升级: ${upgrade.join(' / ')}`);
+      }
+      return parts.join(' | ');
+    }
+
+    function buildSessionFromEditor(options = {}) {
+      const requireCookie = options.requireCookie !== false;
+      const session = {
+        name: sessionNameInput.value.trim(),
+        cookie: normalizeCookieString(cookieInput.value),
+        userAgent: uaInput.value.trim(),
+        acceptLanguage: langInput.value.trim(),
+      };
+
+      if (requireCookie && !session.cookie) {
+        throw new Error('请先粘贴或填写 Cookie。');
+      }
+
+      return session;
+    }
+
+    function populateEditor(session, options = {}) {
+      const clearImport = options.clearImport !== false;
+      sessionNameInput.value = String(session.name || '').trim();
+      cookieInput.value = normalizeCookieString(session.cookie || '');
+      uaInput.value = String(session.userAgent || '').trim();
+      langInput.value = String(session.acceptLanguage || '').trim();
+      if (clearImport) {
+        rawImportInput.value = '';
+      }
+    }
+
+    function updateEditorControls() {
+      if (editingIndex === null) {
+        editorTitle.textContent = '导入账号';
+        saveAccountBtn.textContent = '导入并加入列表';
+        deleteAccountBtn.disabled = true;
+        return;
+      }
+
+      editorTitle.textContent = `编辑账号：${displaySessionName(sessions[editingIndex], editingIndex)}`;
+      saveAccountBtn.textContent = '更新当前账号';
+      deleteAccountBtn.disabled = false;
+    }
+
+    function updateSessionSummary() {
+      if (!sessions.length) {
+        sessionSummary.textContent = '当前还没有账号。先在下面的编辑区导入一个账号，再加入列表。';
+        return;
+      }
+
+      const readyCount = sessions.filter(entry => entry.summary && entry.summary.status === 'ready').length;
+      const errorCount = sessions.filter(entry => entry.summary && entry.summary.status === 'error').length;
+      sessionSummary.textContent = `当前共 ${sessions.length} 个账号。可用 ${readyCount} 个，信息获取失败 ${errorCount} 个。运行时会按列表顺序轮询使用：账号 1 -> 账号 2 -> 账号 3。`;
+    }
+
+    function renderSessionList() {
+      sessionList.replaceChildren();
+      updateSessionSummary();
+
+      if (!sessions.length) {
+        const empty = document.createElement('div');
+        empty.className = 'session-empty';
+        empty.textContent = '账号列表为空。请先完成上方第 1 步，把请求头 / cURL / Cookie 粘贴到导入区，然后点击“导入并加入列表”。';
+        sessionList.appendChild(empty);
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      sessions.forEach((entry, index) => {
+        const item = document.createElement('div');
+        item.className = `session-item${index === editingIndex ? ' active' : ''}`;
+
+        const head = document.createElement('div');
+        head.className = 'session-head';
+
+        const info = document.createElement('div');
+
+        const order = document.createElement('div');
+        order.className = 'session-order';
+        order.textContent = `顺序 ${index + 1}`;
+
+        const title = document.createElement('p');
+        title.className = 'session-title';
+        title.textContent = displaySessionName(entry, index);
+
+        const identityMeta = document.createElement('div');
+        identityMeta.className = 'session-meta';
+        identityMeta.textContent = `账号: ${entry.summary.email || entry.summary.profileName || '未知'}${entry.summary.countryCode ? ` | 地区: ${entry.summary.countryCode}` : ''}`;
+
+        const subscriptionMeta = document.createElement('div');
+        subscriptionMeta.className = 'session-meta';
+        subscriptionMeta.textContent = `状态: ${entry.summary.statusLabel} | 订阅: ${entry.summary.subscriptionLabel}`;
+
+        const modeMeta = document.createElement('div');
+        modeMeta.className = 'session-meta';
+        modeMeta.textContent = `模型能力: ${buildModeText(entry.summary)}`;
+
+        const conversationMeta = document.createElement('div');
+        conversationMeta.className = 'session-meta';
+        conversationMeta.textContent = `会话数: ${entry.summary.conversationCount || 0} | 最近会话: ${entry.summary.latestConversationTitle || '无'} | 最近活跃: ${formatTimeText(entry.summary.latestConversationTime)}`;
+
+        const cookieMeta = document.createElement('div');
+        cookieMeta.className = 'session-meta';
+        cookieMeta.textContent = `Cookie 缩略: ${entry.cookiePreview || maskSecret(entry.cookie) || '-'}`;
+
+        const headerMeta = document.createElement('div');
+        headerMeta.className = 'session-meta';
+        headerMeta.textContent = `User-Agent: ${entry.userAgent ? '已配置' : '未配置'} | Accept-Language: ${entry.acceptLanguage || '未配置'}`;
+
+        info.appendChild(order);
+        info.appendChild(title);
+        info.appendChild(identityMeta);
+        info.appendChild(subscriptionMeta);
+        info.appendChild(modeMeta);
+        info.appendChild(conversationMeta);
+        info.appendChild(cookieMeta);
+        info.appendChild(headerMeta);
+
+        head.appendChild(info);
+        item.appendChild(head);
+
+        const actions = document.createElement('div');
+        actions.className = 'session-actions';
+
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'soft';
+        editBtn.textContent = '编辑';
+        editBtn.addEventListener('click', () => {
+          selectSession(index, { announce: true });
+        });
+
+        const upBtn = document.createElement('button');
+        upBtn.type = 'button';
+        upBtn.className = 'soft';
+        upBtn.textContent = '上移';
+        upBtn.disabled = index === 0;
+        upBtn.addEventListener('click', () => {
+          moveSession(index, -1);
+        });
+
+        const downBtn = document.createElement('button');
+        downBtn.type = 'button';
+        downBtn.className = 'soft';
+        downBtn.textContent = '下移';
+        downBtn.disabled = index === sessions.length - 1;
+        downBtn.addEventListener('click', () => {
+          moveSession(index, 1);
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'warn';
+        deleteBtn.textContent = '删除';
+        deleteBtn.addEventListener('click', () => {
+          removeSession(index, { announce: true });
+        });
+
+        actions.appendChild(editBtn);
+        actions.appendChild(upBtn);
+        actions.appendChild(downBtn);
+        actions.appendChild(deleteBtn);
+        item.appendChild(actions);
+
+        fragment.appendChild(item);
+      });
+
+      sessionList.appendChild(fragment);
+    }
+
+    function selectSession(index, options = {}) {
+      if (index < 0 || index >= sessions.length) {
+        return;
+      }
+
+      editingIndex = index;
+      populateEditor(sessions[index], { clearImport: true });
+      updateEditorControls();
+      renderSessionList();
+
+      if (options.announce !== false) {
+        const names = getCookieNames(sessions[index].cookie);
+        setStatus([
+          `正在编辑 ${displaySessionName(sessions[index], index)}。`,
+          `Cookie 项: ${names.join(', ') || '-'}`,
+          `订阅: ${sessions[index].summary.subscriptionLabel || '未知'}`,
+          `最近会话: ${sessions[index].summary.latestConversationTitle || '无'}`,
+          `列表顺序: ${index + 1} / ${sessions.length}`
+        ].join('\n'));
+      }
+    }
+
+    function startNewSession(options = {}) {
+      editingIndex = null;
+      sessionNameInput.value = '';
+      cookieInput.value = '';
+      uaInput.value = '';
+      langInput.value = '';
+      rawImportInput.value = '';
+      fillCurrentBrowserMeta();
+      updateEditorControls();
+      renderSessionList();
+
+      if (options.announce !== false) {
+        setStatus('已切换到新账号导入模式。请先把请求头 / cURL / Cookie 粘贴到上方导入区，然后点击“导入并加入列表”。');
+      }
+    }
+
+    function sessionsEqual(left, right) {
+      return (
+        String(left.name || '').trim() === String(right.name || '').trim() &&
+        normalizeCookieString(left.cookie) === normalizeCookieString(right.cookie) &&
+        String(left.userAgent || '').trim() === String(right.userAgent || '').trim() &&
+        String(left.acceptLanguage || '').trim() === String(right.acceptLanguage || '').trim()
+      );
+    }
+
+    function upsertCurrentSession(options = {}) {
+      const announce = options.announce !== false;
+      const session = buildSessionFromEditor({ requireCookie: true });
+
+      if (editingIndex === null) {
+        sessions.push(session);
+        editingIndex = sessions.length - 1;
+        updateEditorControls();
+        renderSessionList();
+        if (announce) {
+          setStatus(`已将 ${displaySessionName(session, editingIndex)} 加入账号列表。当前共 ${sessions.length} 个账号。接下来可以继续导入下一个账号，或去右侧填写调用 API Key。`);
+        }
+        return true;
+      }
+
+      sessions[editingIndex] = session;
+      updateEditorControls();
+      renderSessionList();
+      if (announce) {
+        setStatus(`已更新 ${displaySessionName(session, editingIndex)}。当前共 ${sessions.length} 个账号。`);
+      }
+      return true;
+    }
+
+    function ensureEditorSynced() {
+      const cookie = normalizeCookieString(cookieInput.value);
+      if (!cookie) {
+        return false;
+      }
+
+      const session = buildSessionFromEditor({ requireCookie: true });
+      if (editingIndex === null) {
+        sessions.push(session);
+        editingIndex = sessions.length - 1;
+        updateEditorControls();
+        renderSessionList();
+        return true;
+      }
+
+      if (!sessionsEqual(session, sessions[editingIndex])) {
+        sessions[editingIndex] = session;
+        updateEditorControls();
+        renderSessionList();
+        return true;
+      }
+
+      return false;
+    }
+
+    function removeSession(index, options = {}) {
+      if (index < 0 || index >= sessions.length) {
+        return;
+      }
+
+      const removed = sessions.splice(index, 1)[0];
+
+      if (!sessions.length) {
+        startNewSession({ announce: false });
+      } else if (editingIndex === null) {
+        editingIndex = 0;
+        populateEditor(sessions[editingIndex], { clearImport: true });
+        updateEditorControls();
+        renderSessionList();
+      } else {
+        if (editingIndex > index) {
+          editingIndex -= 1;
+        } else if (editingIndex === index) {
+          editingIndex = Math.min(index, sessions.length - 1);
+        }
+
+        populateEditor(sessions[editingIndex], { clearImport: true });
+        updateEditorControls();
+        renderSessionList();
+      }
+
+      if (options.announce !== false) {
+        setStatus(`已删除 ${displaySessionName(removed, index)}。当前剩余 ${sessions.length} 个账号。`);
+      }
+    }
+
+    function moveSession(index, offset) {
+      const target = index + offset;
+      if (index < 0 || target < 0 || index >= sessions.length || target >= sessions.length) {
+        return;
+      }
+
+      const [entry] = sessions.splice(index, 1);
+      sessions.splice(target, 0, entry);
+
+      if (editingIndex === index) {
+        editingIndex = target;
+      } else if (editingIndex !== null && index < editingIndex && target >= editingIndex) {
+        editingIndex -= 1;
+      } else if (editingIndex !== null && index > editingIndex && target <= editingIndex) {
+        editingIndex += 1;
+      }
+
+      renderSessionList();
+      if (editingIndex !== null && sessions[editingIndex]) {
+        populateEditor(sessions[editingIndex], { clearImport: true });
+        updateEditorControls();
+      }
+
+      setStatus(`已调整账号顺序。当前 ${displaySessionName(entry, target)} 位于第 ${target + 1} 个。`);
+    }
+
+    function applyImportedContent(rawText, sourceLabel) {
+      const parsed = parseImportedContent(rawText);
+      cookieInput.value = parsed.cookie;
+      if (parsed.userAgent) {
+        uaInput.value = parsed.userAgent;
+      } else if (!uaInput.value.trim()) {
+        uaInput.value = navigator.userAgent || '';
+      }
+
+      if (parsed.acceptLanguage) {
+        langInput.value = parsed.acceptLanguage;
+      } else if (!langInput.value.trim()) {
+        langInput.value = navigator.language || '';
+      }
+
+      const cookieNames = getCookieNames(parsed.cookie);
+      setStatus([
+        `${sourceLabel}解析成功。`,
+        `Cookie 项: ${cookieNames.join(', ') || '-'}`,
+        `User-Agent: ${parsed.userAgent ? '已识别' : '未识别，已回退为当前浏览器 UA'}`,
+        `Accept-Language: ${parsed.acceptLanguage ? '已识别' : '未识别，已回退为当前浏览器语言'}`,
+        '确认无误后，请点击“导入并加入列表”或“更新当前账号”。'
+      ].join('\n'));
+    }
+
+    function applyState(state) {
+      const apiBaseUrl = String(state.apiBaseUrl || `${window.location.origin}/v1`).trim();
+      apiBaseUrlInput.value = apiBaseUrl;
+      apiUseHint.textContent = `客户端调用 ${apiBaseUrl} 时，把下方“调用 API Key”放到 Authorization: Bearer <key> 里。`;
+      apiKeyInput.value = String(state.apiKey || '').trim();
+
+      const targetIndex = sessions.length && editingIndex !== null
+        ? Math.min(editingIndex, (state.sessions || []).length - 1)
+        : ((state.sessions || []).length ? 0 : null);
+
+      sessions = Array.isArray(state.sessions)
+        ? state.sessions.map((entry, index) => normalizeUiSession(entry, index))
+        : [];
+
+      if (targetIndex !== null && targetIndex >= 0 && targetIndex < sessions.length) {
+        editingIndex = targetIndex;
+        populateEditor(sessions[editingIndex], { clearImport: true });
+        updateEditorControls();
+        renderSessionList();
+      } else {
+        startNewSession({ announce: false });
+      }
+
+      setStatus([
+        `配置文件: ${state.configPath}`,
+        `已保存账号数: ${state.sessionCount || sessions.length}`,
+        `已保存调用 API Key: ${state.hasApiKey ? '是' : '否'} ${state.apiKeyPreview ? `(${state.apiKeyPreview})` : ''}`,
+        `当前 API 地址: ${apiBaseUrl}`
+      ].join('\n'));
+    }
+
+    async function loadState() {
+      const state = await readJson('/ui/api/state');
+      applyState(state);
+    }
+
+    newAccountBtn.addEventListener('click', () => {
+      startNewSession({ announce: true });
+    });
+
+    parseImportBtn.addEventListener('click', () => {
+      try {
+        applyImportedContent(rawImportInput.value, '粘贴内容');
+      } catch (error) {
+        setStatus(`解析失败: ${error.message}`);
+      }
+    });
+
+    pasteImportBtn.addEventListener('click', async () => {
+      if (!navigator.clipboard || !navigator.clipboard.readText) {
+        setStatus('当前浏览器不支持读取剪贴板，请手动粘贴后点“解析粘贴内容”。');
+        return;
+      }
+
+      pasteImportBtn.disabled = true;
+      try {
+        const text = await navigator.clipboard.readText();
+        rawImportInput.value = text;
+        applyImportedContent(text, '剪贴板内容');
+      } catch (error) {
+        setStatus(`读取剪贴板失败: ${error.message}`);
+      } finally {
+        pasteImportBtn.disabled = false;
+      }
+    });
+
+    fillLocalUaBtn.addEventListener('click', () => {
+      fillCurrentBrowserMeta();
+      setStatus('已填入当前访问此页面浏览器的 User-Agent 和语言。');
+    });
+
+    saveAccountBtn.addEventListener('click', () => {
+      try {
+        upsertCurrentSession({ announce: true });
+      } catch (error) {
+        setStatus(`保存当前账号失败: ${error.message}`);
+      }
+    });
+
+    deleteAccountBtn.addEventListener('click', () => {
+      if (editingIndex === null) {
+        setStatus('当前没有正在编辑的已保存账号。');
+        return;
+      }
+      removeSession(editingIndex, { announce: true });
+    });
+
+    resetEditorBtn.addEventListener('click', () => {
+      startNewSession({ announce: true });
+    });
+
+    copyApiUrlBtn.addEventListener('click', async () => {
+      const apiBaseUrl = String(apiBaseUrlInput.value || '').trim();
+      if (!apiBaseUrl) {
+        setStatus('当前 API 调用地址为空，请先等待页面加载完成。');
+        return;
+      }
+
+      if (!navigator.clipboard || !navigator.clipboard.writeText) {
+        setStatus(`当前浏览器不支持复制，请手动复制: ${apiBaseUrl}`);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(apiBaseUrl);
+        setStatus(`已复制 API 调用地址: ${apiBaseUrl}`);
+      } catch (error) {
+        setStatus(`复制失败，请手动复制: ${apiBaseUrl}`);
+      }
+    });
+
+    generateKeyBtn.addEventListener('click', () => {
+      apiKeyInput.value = generateApiKey();
+    });
+
+    toggleKeyBtn.addEventListener('click', () => {
+      const visible = apiKeyInput.type === 'text';
+      apiKeyInput.type = visible ? 'password' : 'text';
+      toggleKeyBtn.textContent = visible ? '显示' : '隐藏';
+    });
+
+    saveConfigBtn.addEventListener('click', async () => {
+      try {
+        ensureEditorSynced();
+      } catch (error) {
+        setStatus(`保存前同步当前账号失败: ${error.message}`);
+        return;
+      }
+
+      const apiKey = apiKeyInput.value.trim();
+      if (!sessions.length) {
+        setStatus('请先至少加入 1 个账号到列表。');
+        return;
+      }
+      if (!apiKey) {
+        setStatus('请先填写或生成调用 API Key。');
+        return;
+      }
+
+      const payload = {
+        api_key: apiKey,
+        sessions: sessions.map(entry => ({
+          name: entry.name,
+          cookie: entry.cookie,
+          user_agent: entry.userAgent,
+          accept_language: entry.acceptLanguage,
+        })),
+      };
+
+      saveConfigBtn.disabled = true;
+      setStatus(`正在保存配置…\n即将写入 ${payload.sessions.length} 个账号。`);
+      try {
+        const data = await readJson('/ui/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        applyState(data.state || {});
+        setStatus(`${data.message}\n\n账号列表和调用 API Key 已刷新。`);
+      } catch (error) {
+        setStatus(`保存失败: ${error.message}`);
+      } finally {
+        saveConfigBtn.disabled = false;
+      }
+    });
+
+    loadState().catch(error => {
+      startNewSession({ announce: false });
+      setStatus(`读取状态失败: ${error.message}`);
+    });
+  </script>
+</body>
+</html>
